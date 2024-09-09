@@ -139,11 +139,11 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     
     # Mostrar tensiones y ángulos cerca de las cuerdas
     font = pygame.font.SysFont(None, 24)
-    text_T1 = font.render(f"T1: {T11:.2f} N", True, BLACK)
-    text_T2 = font.render(f"T2: {T22:.2f} N", True, BLACK)
+    text_T1 = font.render(f"T1: {T11:.2f} N", True, WHITE)
+    text_T2 = font.render(f"T2: {T22:.2f} N", True, WHITE)
     text_theta1 = font.render(f"θ1: {theta1:.1f}°", True, BLACK)
     text_theta2 = font.render(f"θ2: {theta2:.1f}°", True, BLACK)
-    text_weight = font.render(f"{weight:.0f} N", True, BLACK)
+    text_weight = font.render(f"{weight:.0f} N", True, WHITE)
     
     screen.blit(text_T1, ((anchor1_x + body_x) // 2 - 50, (anchor_y + body_y) // 2))
     screen.blit(text_T2, ((anchor2_x + body_x) // 2 + 20, (anchor_y + body_y) // 2))
@@ -153,19 +153,21 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     
     pygame.draw.rect(screen, BLUE, (0, 0, 1440, 45))
     
-    pygame.draw.rect(screen, BLUE, pygame.Rect(22, 520, 440, 300))
-    pygame.draw.rect(screen, WHITE, pygame.Rect(30, 530, 422, 280))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(0, 580, 440, 300))
+    pygame.draw.rect(screen, WHITE, pygame.Rect(7, 590, 422, 280))
     
     font = pygame.font.SysFont(None, 40)
     conversion_text = font.render(f"{result_conversion:.2f} N", True, BLACK)
-    screen.blit(conversion_text, (180, 750))
+    screen.blit(conversion_text, (145, 820))
     
-    btn_function = pygame.Rect(350, 100, 50, 30)
+    texto_Title = font.render('Conversor de Kg a N', True, BLACK)
+    screen.blit(texto_Title, (70,620))
+    
     btn_function_color = pygame.Color('black')
-    btn_function = pygame.Rect(85, 650, 300, 40)
+    btn_function = pygame.Rect(65, 750, 300, 40)
     pygame.draw.rect(screen, btn_function_color, btn_function)
     
-    input_1 = pygame.Rect(85, 580, 300, 45)
+    input_1 = pygame.Rect(65, 680, 300, 45)
     color_inactive = pygame.Color(BLACK)
     color_active = pygame.Color('dodgerblue2')
     color = color_inactive
@@ -174,7 +176,7 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     pygame.draw.rect(screen, color, input_1, 2)
     
     texto = font.render('Convertir', True, WHITE)
-    screen.blit(texto, (170,657))
+    screen.blit(texto, (160,757))
 
     
 def draw_rope(screen, start, end, rope_image):
@@ -211,8 +213,8 @@ def main():
     body_image_rect = None
     
     # Definir el botón y el input aquí
-    btn_function = pygame.Rect(85, 650, 300, 40)
-    input_1 = pygame.Rect(85, 580, 300, 45)
+    btn_function = pygame.Rect(65, 750, 300, 40)
+    input_1 = pygame.Rect(65, 680, 300, 45)
     
     while running:
         for event in pygame.event.get():
@@ -243,7 +245,7 @@ def main():
                     start_theta2 = theta2
                 
                 # Verificar si se hizo clic en el input
-                input_1 = pygame.Rect(85, 580, 300, 45)
+                input_1 = pygame.Rect(65, 680, 300, 45)
                 if input_1.collidepoint(event.pos):
                     active = True
                 else:
@@ -294,7 +296,7 @@ def main():
         
         # Dibujar el input con el texto ingresado
         font = pygame.font.SysFont(None, 24)
-        input_1 = pygame.Rect(85, 580, 300, 45)
+        input_1 = pygame.Rect(65, 680, 300, 45)
         color_inactive = pygame.Color(BLACK)
         color_active = pygame.Color('dodgerblue2')
         color = color_active if active else color_inactive
