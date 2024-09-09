@@ -13,24 +13,30 @@ BLUE = (0, 71, 125)
 pygame.init()
 
 # Cargar imágenes
+rotacion_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Giro.png'
 peso_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Peso.png'
 polea_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Poleas.png'
 rope_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/2.png'
-rope_image = pygame.image.load(os.path.abspath(rope_image_path))
+fondo_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Fondo.png'
 
 # Cargar imágenes
+rotacion_image = pygame.image.load(os.path.abspath(rotacion_image_path))
 peso_image = pygame.image.load(os.path.abspath(peso_image_path))
 polea_image = pygame.image.load(os.path.abspath(polea_image_path))
+rope_image = pygame.image.load(os.path.abspath(rope_image_path))
+fondo_image = pygame.image.load(os.path.abspath(fondo_image_path))
 
 # Redimensionar imágenes (si es necesario)
 peso_image = pygame.transform.scale(peso_image, (520, 450))
 polea_image = pygame.transform.scale(polea_image, (320, 250))
+rotacion_image = pygame.transform.scale(rotacion_image, (90, 70))
+
 
 # Parámetros del sistema físico
-weight = 100  # Peso del cuerpo (N)
-g = 9.81  # Aceleración gravitatoria (m/s^2)
-theta1, theta2 = 40, 40  # Ángulos iniciales en grados
-k = 50 #variable que almacena el valor del kg al convertir
+weight = 100  
+g = 9.81  
+theta1, theta2 = 10, 10  
+k = 50 
 
 # Variables para manejar el arrastre del ratón
 dragging = False
@@ -95,10 +101,6 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     # Calcular la posición del cuerpo
     body_x, body_y = calculate_body_position(anchor1_x, anchor2_x, anchor_y, T1, T2, theta1, theta2)
     
-    # Dibujar las cuerdas como imágenes
-    draw_rope(screen, (anchor1_x, anchor_y), (body_x, body_y), rope_image)
-    draw_rope(screen, (anchor2_x, anchor_y), (body_x, body_y), rope_image)
-    
     # Definir el rectángulo de la imagen del cuerpo
     body_image_rect = peso_image.get_rect(center=(body_x, body_y))
     
@@ -106,12 +108,33 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     polea_image_rect1 = polea_image.get_rect(center=(anchor1_x, anchor_y))
     polea_image_rect2 = polea_image.get_rect(center=(anchor2_x, anchor_y))
     
+    #Definir el fondo del simulaodr
+    fondo_image_rect = fondo_image.get_rect(center = (anchor1_x + 335, anchor_y + 340))
     
-    # Dibujar las imágenes de las poleas
+    # Dibujar el soporte por encima de las poleas
+    screen.blit(fondo_image, fondo_image_rect)
+    
+    # Rotar la imagen de rotación en el lado de theta1
+    rotated_rotacion_image1 = pygame.transform.rotate(rotacion_image, theta1)
+    rotacion_image_rect1 = rotated_rotacion_image1.get_rect(center=(anchor1_x, anchor_y + 20))
+    
+    # Rotar la imagen de rotación en el lado de theta2
+    rotated_rotacion_image2 = pygame.transform.rotate(rotacion_image, theta2)
+    rotacion_image_rect2 = rotated_rotacion_image2.get_rect(center=(anchor2_x, anchor_y + 20))
+    
+    # Dibujar las imágenes de giro rotadas para theta1 y theta2
+    screen.blit(rotated_rotacion_image1, rotacion_image_rect1)
+    screen.blit(rotated_rotacion_image2, rotacion_image_rect2)
+    
+    # Dibujar las cuerdas después de las imágenes de giro
+    draw_rope(screen, (anchor1_x, anchor_y), (body_x, body_y), rope_image)
+    draw_rope(screen, (anchor2_x, anchor_y), (body_x, body_y), rope_image)
+    
+    # Dibujar las imágenes 
     screen.blit(polea_image, polea_image_rect1)
-    screen.blit(polea_image, polea_image_rect2) 
+    screen.blit(polea_image, polea_image_rect2)
     
-    # Dibujar el cuerpo (imagen)
+    # Dibujar el cuerpo (imagen) por encima de la cuerda
     screen.blit(peso_image, body_image_rect)
     
     # Mostrar tensiones y ángulos cerca de las cuerdas
@@ -122,8 +145,8 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     text_theta2 = font.render(f"θ2: {theta2:.1f}°", True, BLACK)
     text_weight = font.render(f"{weight:.0f} N", True, BLACK)
     
-    screen.blit(text_T1, ((anchor1_x + body_x) // 2 - 50, (anchor_y + body_y) // 3))
-    screen.blit(text_T2, ((anchor2_x + body_x) // 2 + 20, (anchor_y + body_y) // 3))
+    screen.blit(text_T1, ((anchor1_x + body_x) // 2 - 50, (anchor_y + body_y) // 2))
+    screen.blit(text_T2, ((anchor2_x + body_x) // 2 + 20, (anchor_y + body_y) // 2))
     screen.blit(text_theta1, (anchor1_x - 50, anchor_y - 30))
     screen.blit(text_theta2, (anchor2_x + 20, anchor_y - 30))
     screen.blit(text_weight, (body_x - 30, body_y + 30))
@@ -152,6 +175,7 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     
     texto = font.render('Convertir', True, WHITE)
     screen.blit(texto, (170,657))
+
     
 def draw_rope(screen, start, end, rope_image):
     # Calcular la distancia y el ángulo entre los puntos

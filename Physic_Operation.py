@@ -14,17 +14,17 @@ pygame.init()
 
 # Cargar imágenes
 rotacion_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Giro.png'
-Soporte_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Soporte.png'
 peso_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Peso.png'
 polea_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Poleas.png'
 rope_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/2.png'
+fondo_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Fondo.png'
 
 # Cargar imágenes
 rotacion_image = pygame.image.load(os.path.abspath(rotacion_image_path))
-soporte_image = pygame.image.load(os.path.abspath(Soporte_image_path))
 peso_image = pygame.image.load(os.path.abspath(peso_image_path))
 polea_image = pygame.image.load(os.path.abspath(polea_image_path))
 rope_image = pygame.image.load(os.path.abspath(rope_image_path))
+fondo_image = pygame.image.load(os.path.abspath(fondo_image_path))
 
 # Redimensionar imágenes (si es necesario)
 peso_image = pygame.transform.scale(peso_image, (520, 450))
@@ -108,17 +108,17 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     polea_image_rect1 = polea_image.get_rect(center=(anchor1_x, anchor_y))
     polea_image_rect2 = polea_image.get_rect(center=(anchor2_x, anchor_y))
     
-    # Dibujar el soporte por encima de las poleas
-    soporte_image_rect1 = soporte_image.get_rect(center=(anchor1_x, anchor_y - 100))
-    soporte_image_rect2 = soporte_image.get_rect(center=(anchor2_x, anchor_y - 100))
-    screen.blit(soporte_image, soporte_image_rect1)
-    screen.blit(soporte_image, soporte_image_rect2)
+    #Definir el fondo del simulaodr
+    fondo_image_rect = fondo_image.get_rect(center = (anchor1_x + 335, anchor_y + 340))
     
-    # **Rotar la imagen de rotación en el lado de theta1**
+    # Dibujar el soporte por encima de las poleas
+    screen.blit(fondo_image, fondo_image_rect)
+    
+    # Rotar la imagen de rotación en el lado de theta1
     rotated_rotacion_image1 = pygame.transform.rotate(rotacion_image, theta1)
     rotacion_image_rect1 = rotated_rotacion_image1.get_rect(center=(anchor1_x, anchor_y + 20))
     
-    # **Rotar la imagen de rotación en el lado de theta2**
+    # Rotar la imagen de rotación en el lado de theta2
     rotated_rotacion_image2 = pygame.transform.rotate(rotacion_image, theta2)
     rotacion_image_rect2 = rotated_rotacion_image2.get_rect(center=(anchor2_x, anchor_y + 20))
     
@@ -126,11 +126,11 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     screen.blit(rotated_rotacion_image1, rotacion_image_rect1)
     screen.blit(rotated_rotacion_image2, rotacion_image_rect2)
     
-    # **Dibujar las cuerdas después de las imágenes de giro**
+    # Dibujar las cuerdas después de las imágenes de giro
     draw_rope(screen, (anchor1_x, anchor_y), (body_x, body_y), rope_image)
     draw_rope(screen, (anchor2_x, anchor_y), (body_x, body_y), rope_image)
     
-    # Dibujar las imágenes de las poleas por encima de la cuerda
+    # Dibujar las imágenes 
     screen.blit(polea_image, polea_image_rect1)
     screen.blit(polea_image, polea_image_rect2)
     
