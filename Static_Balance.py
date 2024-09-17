@@ -139,14 +139,16 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion, conversor_visi
     # Dibujar el cuerpo (imagen) por encima de la cuerda
     screen.blit(peso_image, body_image_rect)
     
-    # Mostrar tensiones y ángulos cerca de las cuerdas
+    font_large = pygame.font.SysFont(None, 40)
     font = pygame.font.SysFont(None, 24)
-    text_T1 = font.render(f"T1: {T11:.2f} N", True, WHITE)
-    text_T2 = font.render(f"T2: {T22:.2f} N", True, WHITE)
+    
+    # Mostrar tensiones y ángulos cerca de las cuerdas
+    text_T1 = font.render(f"T1: {T11:.2f} N", True, BLACK)
+    text_T2 = font.render(f"T2: {T22:.2f} N", True, BLACK)
     text_theta1 = font.render(f"θ1: {theta1:.1f}°", True, BLACK)
     text_theta2 = font.render(f"θ2: {theta2:.1f}°", True, BLACK)
-    text_weight = font.render(f"{weight:.0f} N", True, WHITE)
-    text_mass = font.render(f"{mass:.2f} kg", True, WHITE) 
+    text_weight = font.render(f"{weight:.0f} N", True, BLACK)
+    text_mass = font.render(f"{mass:.2f} kg", True, BLACK) 
     
     screen.blit(text_T1, ((anchor1_x + body_x) // 2 - 50, (anchor_y + body_y) // 2))
     screen.blit(text_T2, ((anchor2_x + body_x) // 2 + 20, (anchor_y + body_y) // 2))
@@ -164,11 +166,10 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion, conversor_visi
         pygame.draw.rect(screen, BLUE, pygame.Rect(0, 580, 440, 235))
         pygame.draw.rect(screen, WHITE, pygame.Rect(7, 590, 422, 215))
         
-        font = pygame.font.SysFont(None, 40)
-        conversion_text = font.render(f"{result_conversion:.2f} N", True, BLACK)
+        conversion_text = font_large .render(f"{result_conversion:.2f} N", True, BLACK)
         screen.blit(conversion_text, (145, 730))
         
-        texto_Title = font.render('Conversor de Kg a N', True, BLACK)
+        texto_Title = font_large.render('Conversor de Kg a N', True, BLACK)
         screen.blit(texto_Title, (70,600))
         
         btn_function_color = pygame.Color('black')
@@ -181,12 +182,12 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion, conversor_visi
         color = color_inactive
         pygame.draw.rect(screen, color, input_1, 2)
         
-        texto = font.render('Convertir', True, WHITE)
+        texto = font_large.render('Convertir', True, WHITE)
         screen.blit(texto, (155, 685))
     
     BtnConversor = pygame.Rect(40, 826, 180, 40)
     pygame.draw.rect(screen, BLUE, BtnConversor)
-    texto2 = font.render('Conversor', True, WHITE)
+    texto2 = font_large.render('Conversor', True, WHITE)
     screen.blit(texto2, (58, 835))
 
     
