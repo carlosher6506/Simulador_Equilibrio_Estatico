@@ -3,7 +3,7 @@ import math
 import os
 
 # Configuraciones iniciales
-WIDTH, HEIGHT = 1350, 840
+WIDTH, HEIGHT = 1350, 880
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
@@ -15,9 +15,9 @@ pygame.init()
 # Cargar imágenes
 rotacion_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Giro.png'
 peso_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Peso.png'
-polea_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Poleas.png'
-rope_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/2.png'
-fondo_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Fondo.png'
+polea_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Poleas2.png'
+rope_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/1.png'
+fondo_image_path = 'C:/Users/carli/Documents/7to Semestre/INGENIERIA DEL SOFTWARE II/Static balance simulator/Simulador_Equilibrio_Estatico/Fondo3.png'
 
 # Cargar imágenes
 rotacion_image = pygame.image.load(os.path.abspath(rotacion_image_path))
@@ -28,14 +28,16 @@ fondo_image = pygame.image.load(os.path.abspath(fondo_image_path))
 
 # Redimensionar imágenes (si es necesario)
 peso_image = pygame.transform.scale(peso_image, (520, 450))
-polea_image = pygame.transform.scale(polea_image, (320, 250))
+polea_image = pygame.transform.scale(polea_image, (200, 140))
 rotacion_image = pygame.transform.scale(rotacion_image, (90, 70))
+rope_image = pygame.transform.scale(rope_image,(420,420))
+
 
 
 # Parámetros del sistema físico
 weight = 100  
 g = 9.81  
-theta1, theta2 = 10, 10  
+theta1, theta2 = 45, 45  
 k = 50 
 
 # Variables para manejar el arrastre del ratón
@@ -75,10 +77,7 @@ def calculate_body_position(anchor1_x, anchor2_x, anchor_y, T1, T2, theta1, thet
     
     if denominator == 0:
         return anchor1_x, anchor_y  # Evitar la división por cero, devolver una posición por defecto
-    
-    body_x = (T2 * math.cos(math.radians(theta2)) * anchor1_x + 
-              T1 * math.cos(math.radians(theta1)) * anchor2_x) / denominator
-    
+    body_x = (T2 * math.cos(math.radians(theta2)) * anchor1_x + T1 * math.cos(math.radians(theta1)) * anchor2_x) / denominator
     body_y = anchor_y + T1 * math.sin(math.radians(theta1))
     return int(body_x), int(body_y)
 
@@ -86,8 +85,11 @@ def conversor(Kg):
     return Kg * 9.81
 
 # Función para dibujar la escena
-def draw_scene(screen, weight, theta1, theta2, result_conversion):
+def draw_scene(screen, weight, theta1, theta2, result_conversion, conversor_visible):
+
     screen.fill(WHITE)
+    
+    mass = weight / g
     
     # Coordenadas de los puntos de anclaje
     anchor1_x = WIDTH // 4
@@ -105,8 +107,8 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     body_image_rect = peso_image.get_rect(center=(body_x, body_y))
     
     # Definir rectángulos de las imágenes de las poleas
-    polea_image_rect1 = polea_image.get_rect(center=(anchor1_x, anchor_y))
-    polea_image_rect2 = polea_image.get_rect(center=(anchor2_x, anchor_y))
+    polea_image_rect1 = polea_image.get_rect(center=(anchor1_x, anchor_y - 22))
+    polea_image_rect2 = polea_image.get_rect(center=(anchor2_x, anchor_y - 22))
     
     #Definir el fondo del simulaodr
     fondo_image_rect = fondo_image.get_rect(center = (anchor1_x + 335, anchor_y + 340))
@@ -144,39 +146,48 @@ def draw_scene(screen, weight, theta1, theta2, result_conversion):
     text_theta1 = font.render(f"θ1: {theta1:.1f}°", True, BLACK)
     text_theta2 = font.render(f"θ2: {theta2:.1f}°", True, BLACK)
     text_weight = font.render(f"{weight:.0f} N", True, WHITE)
+    text_mass = font.render(f"{mass:.2f} kg", True, WHITE) 
     
     screen.blit(text_T1, ((anchor1_x + body_x) // 2 - 50, (anchor_y + body_y) // 2))
     screen.blit(text_T2, ((anchor2_x + body_x) // 2 + 20, (anchor_y + body_y) // 2))
     screen.blit(text_theta1, (anchor1_x - 50, anchor_y - 30))
     screen.blit(text_theta2, (anchor2_x + 20, anchor_y - 30))
     screen.blit(text_weight, (body_x - 30, body_y + 30))
+    screen.blit(text_mass, (body_x - 30, body_y + 50)) 
     
     pygame.draw.rect(screen, BLUE, (0, 0, 1440, 45))
+    pygame.draw.rect(screen, BLUE, pygame.Rect(0, 812, 1440, 65))
+    pygame.draw.rect(screen, WHITE, pygame.Rect(9, 818, 1420, 55))
     
-    pygame.draw.rect(screen, BLUE, pygame.Rect(0, 580, 440, 300))
-    pygame.draw.rect(screen, WHITE, pygame.Rect(7, 590, 422, 280))
+    if conversor_visible:
+        
+        pygame.draw.rect(screen, BLUE, pygame.Rect(0, 580, 440, 235))
+        pygame.draw.rect(screen, WHITE, pygame.Rect(7, 590, 422, 215))
+        
+        font = pygame.font.SysFont(None, 40)
+        conversion_text = font.render(f"{result_conversion:.2f} N", True, BLACK)
+        screen.blit(conversion_text, (145, 730))
+        
+        texto_Title = font.render('Conversor de Kg a N', True, BLACK)
+        screen.blit(texto_Title, (70,600))
+        
+        btn_function_color = pygame.Color('black')
+        btn_function = pygame.Rect(65, 680, 300, 40)
+        pygame.draw.rect(screen, btn_function_color, btn_function)
+        
+        input_1 = pygame.Rect(65, 630, 300, 45)
+        color_inactive = pygame.Color(BLACK)
+        color_active = pygame.Color('dodgerblue2')
+        color = color_inactive
+        pygame.draw.rect(screen, color, input_1, 2)
+        
+        texto = font.render('Convertir', True, WHITE)
+        screen.blit(texto, (155, 685))
     
-    font = pygame.font.SysFont(None, 40)
-    conversion_text = font.render(f"{result_conversion:.2f} N", True, BLACK)
-    screen.blit(conversion_text, (145, 820))
-    
-    texto_Title = font.render('Conversor de Kg a N', True, BLACK)
-    screen.blit(texto_Title, (70,620))
-    
-    btn_function_color = pygame.Color('black')
-    btn_function = pygame.Rect(65, 750, 300, 40)
-    pygame.draw.rect(screen, btn_function_color, btn_function)
-    
-    input_1 = pygame.Rect(65, 680, 300, 45)
-    color_inactive = pygame.Color(BLACK)
-    color_active = pygame.Color('dodgerblue2')
-    color = color_inactive
-    active = False
-    text = '50'
-    pygame.draw.rect(screen, color, input_1, 2)
-    
-    texto = font.render('Convertir', True, WHITE)
-    screen.blit(texto, (160,757))
+    BtnConversor = pygame.Rect(40, 826, 180, 40)
+    pygame.draw.rect(screen, BLUE, BtnConversor)
+    texto2 = font.render('Conversor', True, WHITE)
+    screen.blit(texto2, (58, 835))
 
     
 def draw_rope(screen, start, end, rope_image):
@@ -208,26 +219,31 @@ def main():
     
     running = True
     active = False
+    conversor_visible = False  # Conversor oculto por defecto
     text = '50'
     result_conversion = 0
     body_image_rect = None
     
     # Definir el botón y el input aquí
-    btn_function = pygame.Rect(65, 750, 300, 40)
-    input_1 = pygame.Rect(65, 680, 300, 45)
+    btn_function = pygame.Rect(65, 680, 300, 40)
+    input_1 = pygame.Rect(65, 630, 300, 45)
     
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if btn_function.collidepoint(event.pos):
+                if btn_function.collidepoint(event.pos) and conversor_visible:
                     try:
                         k = float(text)  # Convertir el texto ingresado a un número
                         result_conversion = conversor(k)  # Calcular el resultado
                     except ValueError:
                         print("Ingrese un valor numérico válido")
                         
+                BtnConversor = pygame.Rect(40, 826, 180, 40)
+                if BtnConversor.collidepoint(event.pos):
+                    conversor_visible = not conversor_visible  # Alternar la visibilidad del conversor
+                            
                 dragging = True
                 drag_start_x, drag_start_y = pygame.mouse.get_pos()
                 
@@ -245,8 +261,13 @@ def main():
                     start_theta2 = theta2
                 
                 # Verificar si se hizo clic en el input
-                input_1 = pygame.Rect(65, 680, 300, 45)
+                input_1 = pygame.Rect(65, 630, 300, 45)
                 if input_1.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+                    
+                if input_1.collidepoint(event.pos) and conversor_visible:
                     active = True
                 else:
                     active = False
@@ -291,18 +312,19 @@ def main():
         theta1 = max(1, min(theta1, 90))
         theta2 = max(1, min(theta2, 90))
         
-        # Dibujar la escena con el cuerpo y las cuerdas ajustadas
-        draw_scene(screen, weight, theta1, theta2, result_conversion)
+        # Dibujar la escena
+        draw_scene(screen, weight, theta1, theta2, result_conversion, conversor_visible)
         
+        if conversor_visible:
         # Dibujar el input con el texto ingresado
-        font = pygame.font.SysFont(None, 24)
-        input_1 = pygame.Rect(65, 680, 300, 45)
-        color_inactive = pygame.Color(BLACK)
-        color_active = pygame.Color('dodgerblue2')
-        color = color_active if active else color_inactive
-        pygame.draw.rect(screen, color, input_1, 2)
-        texto = font.render(text, True, BLACK)
-        screen.blit(texto, (input_1.x + 5, input_1.y + 5))
+            font = pygame.font.SysFont(None, 24)
+            input_1 = pygame.Rect(65, 630, 300, 45)
+            color_inactive = pygame.Color(BLACK)
+            color_active = pygame.Color('dodgerblue2')
+            color = color_active if active else color_inactive
+            pygame.draw.rect(screen, color, input_1, 2)
+            texto = font.render(text, True, BLACK)
+            screen.blit(texto, (input_1.x + 5, input_1.y + 5))
         
         pygame.display.flip()
         
